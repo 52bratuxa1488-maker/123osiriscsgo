@@ -1,29 +1,24 @@
-name: Ultimate Build
+name: Osiris CSGO Build
 on: workflow_dispatch
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
         with:
           ref: 'csgo-end-of-life'
-          
+
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
-        
-      - name: Generate Shaders
-        shell: cmd
-        run: |
-          mkdir Source\Resources\Shaders\Build
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x86\fxc.exe" /T vs_3_0 /Vn default_vs /Fh Source\Resources\Shaders\Build\default_vs.h Source\Resources\Shaders\default_vs.hlsl
-          "C:\Program Files (x86)\Windows Kits\10\bin\10.0.19041.0\x86\fxc.exe" /T ps_3_0 /Vn default_ps /Fh Source\Resources\Shaders\Build\default_ps.h Source\Resources\Shaders\default_ps.hlsl
 
-      - name: Build Osiris
-        run: msbuild Osiris.sln /p:Configuration=Release /p:Platform=Win32
+      - name: Build Win32 Release
+        # Мы используем флаг /p:PreferredToolArchitecture=x64 для ускорения
+        # и /m для параллельной сборки, что часто помогает избежать зависаний
+        run: msbuild Osiris.sln /p:Configuration=Release /p:Platform=Win32 /p:PreferredToolArchitecture=x64 /m
 
-      - name: Upload DLL
+      - name: Upload Osiris DLL
         uses: actions/upload-artifact@v4
         with:
-          name: Osiris-Ready-To-Inject
+          name: Osiris-CSGO-Working
           path: Release/Osiris.dll
