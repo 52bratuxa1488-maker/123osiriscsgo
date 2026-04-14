@@ -1,6 +1,5 @@
-name: Build Osiris CSGO
+name: Simple Build
 on: workflow_dispatch
-
 jobs:
   build:
     runs-on: windows-latest
@@ -10,10 +9,10 @@ jobs:
           ref: 'csgo-end-of-life'
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
-      - name: Build
+      - name: Build Win32 Release
         run: msbuild Osiris.sln /p:Configuration=Release /p:Platform=Win32
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Osiris-CSGO-DLL
+          name: Osiris-Working-DLL
           path: Release/Osiris.dll
